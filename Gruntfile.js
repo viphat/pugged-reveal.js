@@ -19,9 +19,22 @@ module.exports = function(grunt) {
 				' */'
 		},
 
-		qunit: {
-			files: [ 'test/*.html' ]
-		},
+		pug: {
+      compile: {
+        options: {
+          client: false,
+          pretty: true
+        },
+        files: [
+        {
+        	cwd: 'content',
+          src: ['index.pug', 'client.pug'],
+          dest: './',
+          expand: true,
+          ext: '.html'
+        } ]
+      }
+    },
 
 		uglify: {
 			options: {
@@ -129,6 +142,10 @@ module.exports = function(grunt) {
 				files: [ 'css/reveal.scss' ],
 				tasks: 'css-core'
 			},
+			pug: {
+				files: [ 'content/*.pug' ],
+				tasks: 'pug'
+			},
 			html: {
 				files: root.map(path => path + '/*.html')
 			},
@@ -149,7 +166,6 @@ module.exports = function(grunt) {
 	});
 
 	// Dependencies
-	grunt.loadNpmTasks( 'grunt-contrib-qunit' );
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
@@ -159,12 +175,13 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks( 'grunt-autoprefixer' );
 	grunt.loadNpmTasks( 'grunt-zip' );
 	grunt.loadNpmTasks( 'grunt-retire' );
+	grunt.loadNpmTasks( 'grunt-contrib-pug' );
 
 	// Default task
-	grunt.registerTask( 'default', [ 'css', 'js' ] );
+	grunt.registerTask( 'default', [ 'css', 'js', 'pug' ] );
 
 	// JS task
-	grunt.registerTask( 'js', [ 'jshint', 'uglify', 'qunit' ] );
+	grunt.registerTask( 'js', [ 'jshint', 'uglify' ] );
 
 	// Theme CSS
 	grunt.registerTask( 'css-themes', [ 'sass:themes' ] );
@@ -180,8 +197,5 @@ module.exports = function(grunt) {
 
 	// Serve presentation locally
 	grunt.registerTask( 'serve', [ 'connect', 'watch' ] );
-
-	// Run tests
-	grunt.registerTask( 'test', [ 'jshint', 'qunit' ] );
 
 };
